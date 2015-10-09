@@ -11,7 +11,6 @@ binddns:
     - running
     - name: {{ datamap.service.name }}
     - enable: {{ datamap.service.enable|default(True) }}
-    - reload: True
     - watch:
 {% for c in datamap.config.manage|default([]) %}
       - file: {{ c }}
