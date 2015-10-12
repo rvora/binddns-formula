@@ -10,6 +10,9 @@ binddns:
   service:
     - running
     - name: {{ datamap.service.name }}
+{% if datamap.service.reload|default(False) }}
+    - reload
+{% endif %}
     - enable: {{ datamap.service.enable|default(True) }}
     - watch:
 {% for c in datamap.config.manage|default([]) %}
