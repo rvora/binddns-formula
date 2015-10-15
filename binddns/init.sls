@@ -171,6 +171,8 @@ incl_{{ z.name }}:
         minimum: {{ z.minimum|default(z_def.minimum) }}
         contact: {{ z.contact|default('root.' ~ z.name ~ '.') }}
         records: {{ z.records|default([]) }}
+        mine_func: {{ z.mine_func|default('network.ip_addrs') }}
+        mine_result: {{ z.mine_result|default('list_first') }}
         auto_delegate_from_mine: {{ z.auto_delegate_from_mine|default([]) }}
         auto_delegate_from_grains: {{ z.auto_delegate_from_grains|default([]) }}
   {% endif %}
