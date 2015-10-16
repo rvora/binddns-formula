@@ -40,7 +40,7 @@ RedHat:
     name: named
     reload: True
   user:
-    name: root
+    name: named
   group:
     name: named
   vardir: /var/named
