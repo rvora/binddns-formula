@@ -4,7 +4,6 @@ Debian:
     - bind9
   service:
     name: bind9
-    reload: True
   user:
     name: bind
   group:
@@ -38,7 +37,6 @@ RedHat:
     - bind-utils
   service:
     name: named
-    reload: True
   user:
     name: named
   group:
