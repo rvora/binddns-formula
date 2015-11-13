@@ -18,6 +18,19 @@
 {% endfor -%}
 {%- endif %}
 
+{% if mine_dual_records is defined and mine_dual_records -%}
+{% set dual_addrs = salt['mine.get'](searchdom, mine_dual_func, 'pcre') -%}
+{% if dual_addrs is defined -%}
+{%- for node, addrlist in dual_addrs.items() -%}
+{%- if mine_dual_result == 'list_first' -%}
+{{mine_dual_prefix}}{{ node }}. {{ ittl }} IN A {{ addrlist|first() }}
+{%- elif mine_result == 'value' %}
+{{mine_dual_prefix}}{{ node }}. {{ ittl }} IN A {{ addrlist }}
+{%- endif %}
+{% endfor -%}
+{%- endif %}
+{%- endif %}
+
 ; generating auto delegation from mine
 {% if auto_delegate_from_mine is defined -%}
 {% for auto in auto_delegate_from_mine -%}

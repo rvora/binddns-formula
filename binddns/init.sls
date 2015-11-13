@@ -173,6 +173,10 @@ incl_{{ z.name }}:
         records: {{ z.records|default([]) }}
         mine_func: {{ z.mine_func|default('network.ip_addrs') }}
         mine_result: {{ z.mine_result|default('list_first') }}
+	mine_dual_records: False
+	mine_dual_prefix: 'int.'
+	mine_dual_func: 'network.ip_addrs'
+	mine_dual_result: 'list_first'
         auto_delegate_from_mine: {{ z.auto_delegate_from_mine|default([]) }}
         auto_delegate_from_grains: {{ z.auto_delegate_from_grains|default([]) }}
   {% endif %}
