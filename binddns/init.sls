@@ -173,7 +173,7 @@ incl_{{ z.name }}:
         records: {{ z.records|default([]) }}
         mine_func: {{ z.mine_func|default('network.ip_addrs') }}
         mine_result: {{ z.mine_result|default('list_first') }}
-	mine_dual_records: False
+	mine_dual_records: {{ z.mine_dual_records|default(False) }}
 	mine_dual_prefix: 'int.'
 	mine_dual_func: 'network.ip_addrs'
 	mine_dual_result: 'list_first'
