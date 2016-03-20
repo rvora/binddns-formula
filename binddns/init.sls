@@ -172,6 +172,7 @@ incl_{{ z.name }}:
         contact: {{ z.contact|default('root.' ~ z.name ~ '.') }}
         records: {{ z.records|default([]) }}
         mine_func: {{ z.mine_func|default('network.ip_addrs') }}
+        mine_search_pcre: {{ z.mine_search_pcre|default("[\w-]+\." ~ z.name) }}
         mine_result: {{ z.mine_result|default('list_first') }}
         mine_dual_records: {{ z.mine_dual_records|default(False) }}
         mine_dual_prefix: {{ z.mine_dual_prefix|default('int.') }}
