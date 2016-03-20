@@ -4,7 +4,7 @@
   {%- set ittl = ' ' ~ ttl ~ ' ' -%}
 {%- endif -%}
 
-{%- if defined mine_search_pcre -%}
+{%- if mine_search_pcre is defined -%}
 {%- set searchdom = mine_search_pcre %}
 {%- else -%}
 {%- set searchdom = "[\w-]+\." ~ name %}
