@@ -10,6 +10,11 @@
 
 {% if addrs is defined -%}
 {%- for node, addrlist in addrs.items() -%}
+{%- if minion_id_replace -%}
+  {%- for repl in minion_id_replace -%}
+    {%- set node = node|replace(repl.from|default(''), repl.to|default('')) -%}
+  {%- endfor -%}
+{%- endif %}
 {%- if mine_result == 'list_first' -%}
 {{ node }}. {{ ittl }} IN A {{ addrlist|first() }}
 {%- elif mine_result == 'value' %}
@@ -22,6 +27,11 @@
 {% set dual_addrs = salt['mine.get'](searchdom, mine_dual_func, 'pcre') -%}
 {% if dual_addrs is defined -%}
 {%- for node, addrlist in dual_addrs.items() -%}
+{%- if minion_id_replace -%}
+  {%- for repl in minion_id_replace -%}
+    {%- set node = node|replace(repl.from|default(''), repl.to|default('')) -%}
+  {%- endfor -%}
+{%- endif %}
 {%- if mine_dual_result == 'list_first' -%}
 {{mine_dual_prefix}}{{ node }}. {{ ittl }} IN A {{ addrlist|first() }}
 {%- elif mine_result == 'value' %}
@@ -39,6 +49,11 @@
 {% if addrs is defined and addrs -%}
 ; A records auto-delegated by Salt for {{ auto.nameserver_match }} {{ auto.match_type|default('glob') }}
 {% for node, addrlist in addrs.items() -%}
+{%- if minion_id_replace -%}
+  {%- for repl in minion_id_replace -%}
+    {%- set node = node|replace(repl.from|default(''), repl.to|default('')) -%}
+  {%- endfor -%}
+{%- endif %}
 {% set delegate_domain = node.split('.') -%}
 {% do delegate_domain.pop(0) -%}
 {% if delegate_domain|length > 1 -%}
@@ -59,6 +74,11 @@
 {% if addrs is defined and addrs -%}
 ; A records auto-delegated by Salt for grain {{ auto.grain }}
 {% for node, addrlist in addrs.items() -%}
+{%- if minion_id_replace -%}
+  {%- for repl in minion_id_replace -%}
+    {%- set node = node|replace(repl.from|default(''), repl.to|default('')) -%}
+  {%- endfor -%}
+{%- endif %}
 {% set delegate_domain = node.split('.') -%}
 {% do delegate_domain.pop(0) -%}
 {% if delegate_domain|length > 1 -%}
