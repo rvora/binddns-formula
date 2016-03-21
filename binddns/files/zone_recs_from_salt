@@ -20,7 +20,7 @@
     {%- set newnode = node|replace(repl.from|default(''), repl.to|default('')) -%}
 
 ; {{ newnode }}
-    {%- set node = node -%}
+    {%- set node = newnode -%}
 
   {%- endfor -%}
 {%- endif %}
