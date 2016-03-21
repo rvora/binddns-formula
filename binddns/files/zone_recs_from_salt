@@ -14,6 +14,7 @@
 {%- for node, addrlist in addrs.items() -%}
 {%- if minion_id_replace -%}
   {%- for repl in minion_id_replace -%}
+; {{ node, repl.from, repl, to }}
     {%- set node = node|replace(repl.from|default(''), repl.to|default('')) -%}
   {%- endfor -%}
 {%- endif %}
