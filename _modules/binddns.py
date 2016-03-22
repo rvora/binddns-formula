@@ -1,7 +1,8 @@
 import salt.client
 
 def node_replace(node, minion_id_replace):
-    for repl_key, repl_dict in minion_id_replace:
+    for repl_key in minion_id_replace:
+        repl_dict = minion_id_replace[repl_key]
         node = node.replace(repl_dict['from'], repl_dict['to'])
     return node
 
