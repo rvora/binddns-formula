@@ -6,8 +6,8 @@ def node_replace(node, minion_id_replace):
     return node
 
 def records_from_mine(mine_search_pcre, mine_func, minion_id_replace, mine_result):
-    localclient = salt.client.LocalClient()
-    ret = localclient.cmd(mine_search_pcre, 'mine.get', [mine_func], expr_form='pcre')
+    #localclient = salt.client.LocalClient()
+    ret = __salt__['mine.get'](mine_search_pcre, mine_func, 'pcre')
     if not ret:
         return None
 
