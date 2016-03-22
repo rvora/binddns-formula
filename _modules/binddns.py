@@ -1,8 +1,8 @@
 import salt.client
 
 def node_replace(node, minion_id_replace):
-    for key, repl in minion_id_replace.iteritems():
-        node = node.replace(repl['from'], repl['to'])
+    for repl_key, repl_dict in minion_id_replace:
+        node = node.replace(repl_dict['from'], repl_dict['to'])
     return node
 
 def records_from_mine(mine_search_pcre, mine_func, minion_id_replace, mine_result):
