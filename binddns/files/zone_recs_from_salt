@@ -12,16 +12,13 @@
 {% if addrs is defined -%}
 {%- for node, addrlist in addrs.items() -%}
 {%- if minion_id_replace -%}
-{%- set newnode = node -%}
-  {%- for repl in minion_id_replace -%}
-    {%- set newnode = node|replace(repl.from|default(''), repl.to|default('')) -%}
-  {%- endfor -%}
+{%- node = salt['binddns.node_replace(node, minion_id_replace) -%}
 {%- endif %}
-; node: {{ node }} newnode: {{ newnode }}{{ addrlist }}
+; node: {{ node }} {{ addrlist }}
 {%- if mine_result == 'list_first' -%}
-{{ newnode }}. {{ ittl }} IN A {{ addrlist|first() }}
+{{ node }}. {{ ittl }} IN A {{ addrlist|first() }}
 {%- elif mine_result == 'value' %}
-{{ newnode }}. {{ ittl }} IN A {{ addrlist }}
+{{ node }}. {{ ittl }} IN A {{ addrlist }}
 {%- endif %}
 {% endfor -%}
 {%- endif %}
