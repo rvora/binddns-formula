@@ -15,20 +15,13 @@
 {%- if minion_id_replace -%}
 {%- set newnode = node -%}
   {%- for repl in minion_id_replace -%}
-
-; {{ node }} {{ repl.from }} {{ repl.to }}
-
     {%- set newnode = node|replace(repl.from|default(''), repl.to|default('')) -%}
-
-; {{ newnode }}
-
   {%- endfor -%}
-{%- set node = newnode -%}
 {%- endif %}
 {%- if mine_result == 'list_first' -%}
-{{ node }}. {{ ittl }} IN A {{ addrlist|first() }}
+{{ newnode }}. {{ ittl }} IN A {{ addrlist|first() }}
 {%- elif mine_result == 'value' %}
-{{ node }}. {{ ittl }} IN A {{ addrlist }}
+{{ newnode }}. {{ ittl }} IN A {{ addrlist }}
 {%- endif %}
 {% endfor -%}
 {%- endif %}
