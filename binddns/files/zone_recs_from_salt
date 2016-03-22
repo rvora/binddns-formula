@@ -12,7 +12,7 @@
 {% if addrs is defined -%}
 {%- for node, addrlist in addrs.items() -%}
 {%- if minion_id_replace -%}
-{%- node = salt['binddns.node_replace(node, minion_id_replace) -%}
+{%- node = salt['binddns.node_replace'](node, minion_id_replace) -%}
 {%- endif %}
 ; node: {{ node }} {{ addrlist }}
 {%- if mine_result == 'list_first' -%}
