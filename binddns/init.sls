@@ -171,15 +171,19 @@ incl_{{ z.name }}:
         minimum: {{ z.minimum|default(z_def.minimum) }}
         contact: {{ z.contact|default('root.' ~ z.name ~ '.') }}
         records: {{ z.records|default([]) }}
+
+        mine_search: {{ z.mine_search|default("[\w-]+\." ~ z.name) }}
+        mine_search_expr: {{ z.mine_search_expr|default("pcre") }}
+
         mine_func: {{ z.mine_func|default('network.ip_addrs') }}
-        mine_search_pcre: {{ z.mine_search_pcre|default("[\w-]+\." ~ z.name) }}
-        mine_result: {{ z.mine_result|default('list_first') }}
+
         mine_dual_records: {{ z.mine_dual_records|default(False) }}
-        mine_dual_prefix: {{ z.mine_dual_prefix|default('int.') }}
         mine_dual_func:  {{ z.mine_dual_func|default('network.ip_addrs') }}
-        mine_dual_result: {{ z.mine_dual_result|default('list_first') }}
+        mine_dual_prefix: {{ z.mine_dual_prefix|default('int-') }}
+
         auto_delegate_from_mine: {{ z.auto_delegate_from_mine|default([]) }}
         auto_delegate_from_grains: {{ z.auto_delegate_from_grains|default([]) }}
+
         minion_id_replace: {{ z.minion_id_replace|default([]) }}
   {% endif %}
 {% endfor %}
