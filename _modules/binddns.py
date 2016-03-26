@@ -25,7 +25,7 @@ def records_from_mine(mine_search, mine_func, minion_id_replace, mine_search_exp
     for node, addr in ret.items():
         if minion_id_replace:
             node = _node_replace(node, minion_id_replace)
-        data.append(node, _get_addr(addr))
+        data.append((node, _get_addr(addr)))
     return data
 
 def dual_records_from_mine(mine_search, mine_dual_func, minion_id_replace, mine_search_expr='pcre', mine_dual_prefix='int-'):
@@ -39,7 +39,7 @@ def dual_records_from_mine(mine_search, mine_dual_func, minion_id_replace, mine_
         if minion_id_replace:
             node = _node_replace(node, minion_id_replace)
         node = mine_dual_prefix + node
-        data.append(node, _get_addr(addr))
+        data.append((node, _get_addr(addr)))
     return data
 
 def auto_delegate_zone_from_mine(auto_delegate_from_mine, minion_id_replace):
