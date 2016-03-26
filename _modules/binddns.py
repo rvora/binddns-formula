@@ -60,10 +60,10 @@ def auto_delegate_zone_from_mine(auto_delegate_from_mine, minion_id_replace):
 
     return data
 
-def auto_delegate_zone_from_grain(auto_delegate_from_grain, minion_id_replace):
+def auto_delegate_zone_from_grain(auto_delegate_from_grains, minion_id_replace):
     """Delegate DNS sub-domains to minions matching pattern"""
     data = []
-    for auto in auto_delegate_from_grain:
+    for auto in auto_delegate_from_grains:
         ret = __salt__['grains.get'](auto['grain'], {})
         if not ret:
             return []

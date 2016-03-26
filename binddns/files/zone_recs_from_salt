@@ -28,7 +28,7 @@
 
 ; generating auto delegation from grains
 {% if auto_delegate_from_grains is defined -%}
-  {%- set delegate_from_grain_records = salt['binddns.auto_delegate_zone_from_grain'](auto_delegate_from_grain, minion_id_replace) -%}
+  {%- set delegate_from_grain_records = salt['binddns.auto_delegate_zone_from_grain'](auto_delegate_from_grains, minion_id_replace) -%}
   {%- for delegated_domain, delegate_to, addr in delegate_from_grain_records -%}
 ; Delegation for domain {{ delegated_domain }}. to {{delegate_to}} at {{ addr }}
 {{ delegated_domain }}. {{ ittl }} IN NS {{ delegate_to }}.
