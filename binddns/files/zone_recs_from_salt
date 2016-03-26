@@ -19,7 +19,7 @@
 ; generating auto delegation from mine
 {% if auto_delegate_from_mine is defined -%}
   {%- set delegate_from_mine_records = salt['binddns.auto_delegate_zone_from_mine'](auto_delegate_from_mine, minion_id_replace) -%}
-  {%- for delegated_domain, delegate_to, addr in delegate_from_mine_records.items() -%}
+  {%- for delegated_domain, delegate_to, addr in delegate_from_mine_records -%}
 ; Delegation for domain {{ delegated_domain }}. to {{delegate_to}} at {{ addr }}
 {{ delegated_domain }}. {{ ittl }} IN NS {{ delegate_to }}.
 {{ delegate_to }}. {{ ittl }} IN A {{ addr }}
@@ -29,7 +29,7 @@
 ; generating auto delegation from grains
 {% if auto_delegate_from_grains is defined -%}
   {%- set delegate_from_grain_records = salt['binddns.auto_delegate_zone_from_grain'](auto_delegate_from_grain, minion_id_replace) -%}
-  {%- for delegated_domain, delegate_to, addr in delegate_from_grain_records.items() -%}
+  {%- for delegated_domain, delegate_to, addr in delegate_from_grain_records -%}
 ; Delegation for domain {{ delegated_domain }}. to {{delegate_to}} at {{ addr }}
 {{ delegated_domain }}. {{ ittl }} IN NS {{ delegate_to }}.
 {{ delegate_to }}. {{ ittl }} IN A {{ addr }}
