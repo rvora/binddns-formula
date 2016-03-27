@@ -89,11 +89,11 @@ options:
 {%
 set z_def = {
   'ttl': 300,
-  'serial': 1,
+  'serial': {{ salt['grains.get']('binddns_serial') }},
   'refresh': 86400,
   'retry': 3600,
   'expire': 604800,
-  'minimum': 3600,
+  'minimum': 10,
 }
 %}
 
