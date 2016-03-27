@@ -7,7 +7,6 @@ import re
 import logging
 import httplib
 import socket
-from salt.grains import core
 
 # Set up logging
 LOG = logging.getLogger(__name__)
@@ -51,10 +50,27 @@ def _get_ip_address(url, body=None, headers=None):
 
 
 def ec2_internal_ip():
-    return os_internal_ip
+    local_url = "/latest/meta-data/local-ipv4"
+    body = ''
+    headers = {}
+    local_ip = _get_ip_address(local_url)
+
+    return {'ec2_internal_ip': local_ip}
 
 def ec2_external_ip():
-    return os_external_ip
+    public_url = "/latest/meta-data/public-ipv4"
+    local_url = "/latest/meta-data/local-ipv4"
+    body = ''
+    headers = {}
+    public_ip = _get_ip_address(public_url)
+    local_ip = _get_ip_address(local_url)
+
+    if public_ip:
+        #vpc
+        return {'ec2_external_ip': public_ip}
+    else:
+        #classic
+        return {'ec2_external_ip': local_ip}
 
 def os_internal_ip():
     """
@@ -113,6 +129,8 @@ def gce_external_ip():
 if __name__ == "__main__":
     print os_external_ip()
     print gce_external_ip()
+    print ec2_external_ip()
     print os_internal_ip()
     print gce_internal_ip()
+    print ec2_internal_ip()
 
