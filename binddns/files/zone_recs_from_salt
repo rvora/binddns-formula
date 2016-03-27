@@ -18,7 +18,7 @@
 {{ record[0] }}. {{ ittl }} IN A {{ record[1] }}
 {% endfor %}
 
-{% if auto_delegate_from_mine is defined -%}
+{% if auto_delegate_from_mine is defined and auto_delegate_from_mine -%}
 ; generating auto delegation from mine
   {%- set delegate_from_mine_records = salt['binddns.auto_delegate_zone_from_mine'](auto_delegate_from_mine, minion_id_replace) -%}
   {%- for delegated_domain, delegate_to, addr in delegate_from_mine_records -%}
@@ -29,7 +29,7 @@
   {% endfor -%}
 {%- endif %}
 
-{% if auto_delegate_from_grains is defined -%}
+{% if auto_delegate_from_grains is defined and auto_delegate_from_grains -%}
 ; generating auto delegation from grains
   {%- set delegate_from_grain_records = salt['binddns.auto_delegate_zone_from_grain'](auto_delegate_from_grains, minion_id_replace) -%}
   {%- for delegated_domain, delegate_to, addr in delegate_from_grain_records -%}
