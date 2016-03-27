@@ -50,6 +50,12 @@ def _get_ip_address(url, body=None, headers=None):
         return None
 
 
+def ec2_internal_ip():
+    return os_internal_ip
+
+def ec2_external_ip():
+    return os_external_ip
+
 def os_internal_ip():
     """
     """
