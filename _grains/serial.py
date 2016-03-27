@@ -7,4 +7,4 @@ def binddns_serial():
     return {'bind_serial': str(now)}
 
 if __name__ == "__main__":
-    print bind_serial()
+    print binddns_serial()
