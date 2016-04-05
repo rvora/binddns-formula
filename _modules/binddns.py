@@ -1,3 +1,4 @@
+import re
 
 def _get_addr(addr):
     """Return single IP address"""
@@ -19,7 +20,14 @@ def _node_replace(node, minion_id_replace):
         for repl_dict in minion_id_replace['replace_list']:
             node = node.replace(repl_dict['from'], repl_dict['to'])
         return node
+    elif minion_id_replace['type'] == 'regex':
+        if 'regex_list' not in minion_id_replace:
+            return node
+        for repl_dict in minion_id_replace['regex_list']:
+            node = re.sub(repl_dict['pattern'], repl_dict['repl'])
+        return node
     elif minion_id_replace['type'] == 'mine_map':
+        # unimplemented
         return node
     else:
         return node
