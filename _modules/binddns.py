@@ -11,9 +11,18 @@ def _get_addr(addr):
 
 def _node_replace(node, minion_id_replace):
     """Rename minion id using string replace patterns"""
-    for repl_dict in minion_id_replace:
-        node = node.replace(repl_dict['from'], repl_dict['to'])
-    return node
+    if 'type' not in minion_id_replace:
+        return node
+    if minion_id_replace['type'] == 'replace':
+        if 'replace_list' not in minion_id_replace:
+            return node
+        for repl_dict in minion_id_replace['replace_list']:
+            node = node.replace(repl_dict['from'], repl_dict['to'])
+        return node
+    elif minion_id_replace['type'] == 'mine_map':
+        return node
+    else:
+        return node
 
 def records_from_mine(mine_search, mine_func, minion_id_replace, mine_search_expr):
     """Rerturn list of (node, ip) tuples from Salt mine"""

@@ -184,6 +184,6 @@ incl_{{ z.name }}:
         auto_delegate_from_mine: {{ z.auto_delegate_from_mine|default([]) }}
         auto_delegate_from_grains: {{ z.auto_delegate_from_grains|default([]) }}
 
-        minion_id_replace: {{ z.minion_id_replace|default([]) }}
+        minion_id_replace: {{ z.minion_id_replace|default({}) }}
   {% endif %}
 {% endfor %}
