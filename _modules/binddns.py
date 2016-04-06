@@ -39,10 +39,10 @@ def ip_cloud(corp=None):
         return ctype
     elif hy_type == 'gce':
         ctype['type'] = hy_type
-        ctype['internal_ip'] = __salt__['grains.get']('ec2_internal_ip', None)
-        ctype['external_ip'] = __salt__['grains.get']('ec2_external_ip', None)
+        ctype['internal_ip'] = __salt__['grains.get']('gce_internal_ip', None)
+        ctype['external_ip'] = __salt__['grains.get']('gce_external_ip', None)
         fqdn = __salt__['grains.get']('id')
-        fqdn = re.sub(r'\.c\.([\w-]+)\.internal', '.\1.' + corp, fqdn)
+        fqdn = re.sub(r'\.c\.([\w-]+)\.internal', '\1.' + corp, fqdn)
         ctype['fqdn'] = fqdn
         return ctype
     elif hy_type == 'os':
