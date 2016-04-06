@@ -11,8 +11,8 @@ def _get_addr(addr):
         return '127.0.0.1'
 
 def _get_hybridtype():
-    serial = salt['grains.get']('serialnumber', None)
-    manuf = salt['grains.get']('manufacturer', None)
+    serial = __salt__['grains.get']('serialnumber', None)
+    manuf = __salt__['grains.get']('manufacturer', None)
     if serial and serial.startswith('ec2'):
         return 'ec2'
     elif serial and serial.startswith('Google'):
@@ -33,23 +33,23 @@ def ip_cloud(corp=None):
     ctype = {}
     if hy_type == 'ec2':
         ctype['type'] = hy_type
-        ctype['internal_ip'] = salt['grains.get']('ec2_internal_ip', None)
-        ctype['external_ip'] = salt['grains.get']('ec2_external_ip', None)
-        ctype['fqdn'] = salt['grains.get']('id').replace('compute.internal', corp)
+        ctype['internal_ip'] = __salt__['grains.get']('ec2_internal_ip', None)
+        ctype['external_ip'] = __salt__['grains.get']('ec2_external_ip', None)
+        ctype['fqdn'] = __salt__['grains.get']('id').replace('compute.internal', corp)
         return ctype
     elif hy_type == 'gce':
         ctype['type'] = hy_type
-        ctype['internal_ip'] = salt['grains.get']('ec2_internal_ip', None)
-        ctype['external_ip'] = salt['grains.get']('ec2_external_ip', None)
-        fqdn = salt['grains.get']('id')
+        ctype['internal_ip'] = __salt__['grains.get']('ec2_internal_ip', None)
+        ctype['external_ip'] = __salt__['grains.get']('ec2_external_ip', None)
+        fqdn = __salt__['grains.get']('id')
         fqdn = re.sub(r'\.c\.([\w-]+)\.internal', '.\1.' + corp, fqdn)
         ctype['fqdn'] = fqdn
         return ctype
     elif hy_type == 'os':
         ctype['type'] = hy_type
-        ctype['internal_ip'] = salt['grains.get']('os_internal_ip', None)
-        ctype['external_ip'] = salt['grains.get']('os_external_ip', None)
-        ctype['fqdn'] = salt['grains.get']('id').replace('novalocal', corp)
+        ctype['internal_ip'] = __salt__['grains.get']('os_internal_ip', None)
+        ctype['external_ip'] = __salt__['grains.get']('os_external_ip', None)
+        ctype['fqdn'] = __salt__['grains.get']('id').replace('novalocal', corp)
         ctype['fqdn'] = ctype['fqdn'].replace('openstacklocal', corp)
         return ctype
     else:
