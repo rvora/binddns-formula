@@ -10,6 +10,51 @@ def _get_addr(addr):
         # unknown data type, return something sane
         return '127.0.0.1'
 
+def _get_hybridtype():
+    serial = salt['grains.get']('serialnumber', None)
+    manuf = salt['grains.get']('manufacturer', None)
+    if serial and serial.startswith('ec2'):
+        return 'ec2'
+    elif serial and serial.startswith('Google'):
+        return 'gce'
+    elif manuf and manuf.startswith('OpenStack'):
+        return 'os'
+    else:
+        raise RuntimeError, "No implemented"
+
+def ip_cloud(corp=None):
+    """Returns a dictionary
+    {internal_ip:
+     external_ip:
+     type:
+     fqdn: }
+    """
+    hy_type = _get_hybridtype()
+    ctype = {}
+    if hy_type == 'ec2':
+        ctype['type'] = hy_type
+        ctype['internal_ip'] = salt['grains.get']('ec2_internal_ip', None)
+        ctype['external_ip'] = salt['grains.get']('ec2_external_ip', None)
+        ctype['fqdn'] = salt['grains.get']('id').replace('compute.internal', corp)
+        return ctype
+    elif hy_type == 'gce':
+        ctype['type'] = hy_type
+        ctype['internal_ip'] = salt['grains.get']('ec2_internal_ip', None)
+        ctype['external_ip'] = salt['grains.get']('ec2_external_ip', None)
+        fqdn = salt['grains.get']('id')
+        fqdn = re.sub(r'\.c\.([\w-]+)\.internal', '.\1.' + corp, fqdn)
+        ctype['fqdn'] = fqdn
+        return ctype
+    elif hy_type == 'os':
+        ctype['type'] = hy_type
+        ctype['internal_ip'] = salt['grains.get']('os_internal_ip', None)
+        ctype['external_ip'] = salt['grains.get']('os_external_ip', None)
+        ctype['fqdn'] = salt['grains.get']('id').replace('novalocal', corp)
+        ctype['fqdn'] = ctype['fqdn'].replace('openstacklocal', corp)
+        return ctype
+    else:
+        raise RuntimeError, "No implemented"
+
 def _node_replace(node, minion_id_replace):
     """Rename minion id using string replace patterns"""
     if 'type' not in minion_id_replace:
