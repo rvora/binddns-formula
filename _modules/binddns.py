@@ -22,7 +22,17 @@ def _get_hybridtype():
     else:
         raise RuntimeError, "No implemented"
 
-def ip_cloud(corp=None):
+def internal_cloud_ip(corp=None):
+    ctype = _cloud_ip(corp=corp)
+    return {'internal_ip': ctype['internal_ip'],
+            'fqdn': ctype['fqdn']}
+
+def external_cloud_ip(corp=None):
+    ctype = _cloud_ip(corp=corp)
+    return {'external_ip': ctype['external_ip'],
+            'fqdn': ctype['fqdn']}
+
+def _cloud_ip(corp=None):
     """Returns a dictionary
     {internal_ip:
      external_ip:
@@ -55,7 +65,7 @@ def ip_cloud(corp=None):
     else:
         raise RuntimeError, "No implemented"
 
-def _node_replace(node, minion_id_replace):
+def _node_replace(node, minion_id_replace, mine_data=None):
     """Rename minion id using string replace patterns"""
     if 'type' not in minion_id_replace:
         return node
@@ -71,9 +81,13 @@ def _node_replace(node, minion_id_replace):
         for repl_dict in minion_id_replace['regex_list']:
             node = re.sub(repl_dict['pattern'], repl_dict['repl'])
         return node
-    elif minion_id_replace['type'] == 'mine_map':
-        # unimplemented
-        return node
+    elif minion_id_replace['type'] == 'autocloud':
+        if 'fqdn' not in mine_data or 
+           'internal_ip' not in mine_data or 
+           'external_ip' not in mine_data:
+            raise RuntimeError, "Unexpected input"
+
+        return fqdn
     else:
         return node
 
@@ -86,8 +100,8 @@ def records_from_mine(mine_search, mine_func, minion_id_replace, mine_search_exp
     data = []
     for node, addr in ret.items():
         if minion_id_replace:
-            node = _node_replace(node, minion_id_replace)
-        data.append((node, _get_addr(addr)))
+            (node,ip) = _node_replace(node, minion_id_replace, addr)
+            data.append((node, ip))
     return data
 
 def dual_records_from_mine(mine_search, mine_dual_func, minion_id_replace, mine_search_expr='pcre', mine_dual_prefix='int-'):
@@ -99,9 +113,10 @@ def dual_records_from_mine(mine_search, mine_dual_func, minion_id_replace, mine_
     data = []
     for node, addr in ret.items():
         if minion_id_replace:
-            node = _node_replace(node, minion_id_replace)
-        node = mine_dual_prefix + node
-        data.append((node, _get_addr(addr)))
+            (node, ip) = _node_replace(node, minion_id_replace, addr)
+            node = mine_dual_prefix + node
+            data.append((node, ip))
+    return data
     return data
 
 def auto_delegate_zone_from_mine(auto_delegate_from_mine, minion_id_replace):
