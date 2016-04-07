@@ -68,11 +68,11 @@ def _cloud_ip(corp=None):
 def _node_replace(node, mine_data=None):
     """Rename minion id using string replace patterns"""
 
-    if isinstance(mind_data, list) and len(mind_data) > 0:
-        return mind_data[0]
-    elif isinstance(mind_data, (str, unicode)):
-        return mind_data
-    elif isinstance(mind_data, dict) and len(mind_data) > 0:
+    if isinstance(mine_data, list) and len(mine_data) > 0:
+        return mine_data[0]
+    elif isinstance(mine_data, (str, unicode)):
+        return mine_data
+    elif isinstance(mine_data, dict) and len(mine_data) > 0:
         if 'fqdn' not in mine_data or  'ip' not in mine_data:
             raise RuntimeError, "fqdn or ip not in mine_data"
         node = mine_data['fqdn']
