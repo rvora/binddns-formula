@@ -82,8 +82,8 @@ def _node_replace(node, minion_id_replace, mine_data=None):
             node = re.sub(repl_dict['pattern'], repl_dict['repl'])
         return node
     elif minion_id_replace['type'] == 'autocloud':
-        if 'fqdn' not in mine_data or 
-           'internal_ip' not in mine_data or 
+        if 'fqdn' not in mine_data or \
+           'internal_ip' not in mine_data or \
            'external_ip' not in mine_data:
             raise RuntimeError, "Unexpected input"
 
