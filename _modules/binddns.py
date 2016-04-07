@@ -24,12 +24,12 @@ def _get_hybridtype():
 
 def internal_cloud_ip(corp=None):
     ctype = _cloud_ip(corp=corp)
-    return {'internal_ip': ctype['internal_ip'],
+    return {'ip': ctype['internal_ip'],
             'fqdn': ctype['fqdn']}
 
 def external_cloud_ip(corp=None):
     ctype = _cloud_ip(corp=corp)
-    return {'external_ip': ctype['external_ip'],
+    return {'ip': ctype['external_ip'],
             'fqdn': ctype['fqdn']}
 
 def _cloud_ip(corp=None):
@@ -65,33 +65,24 @@ def _cloud_ip(corp=None):
     else:
         raise RuntimeError, "No implemented"
 
-def _node_replace(node, minion_id_replace, mine_data=None):
+def _node_replace(node, mine_data=None):
     """Rename minion id using string replace patterns"""
-    if 'type' not in minion_id_replace:
-        return node
-    if minion_id_replace['type'] == 'replace':
-        if 'replace_list' not in minion_id_replace:
-            return node
-        for repl_dict in minion_id_replace['replace_list']:
-            node = node.replace(repl_dict['from'], repl_dict['to'])
-        return node
-    elif minion_id_replace['type'] == 'regex':
-        if 'regex_list' not in minion_id_replace:
-            return node
-        for repl_dict in minion_id_replace['regex_list']:
-            node = re.sub(repl_dict['pattern'], repl_dict['repl'])
-        return node
-    elif minion_id_replace['type'] == 'autocloud':
-        if 'fqdn' not in mine_data or \
-           'internal_ip' not in mine_data or \
-           'external_ip' not in mine_data:
-            raise RuntimeError, "Unexpected input"
 
-        return fqdn
+    if isinstance(mind_data, list) and len(mind_data) > 0:
+        return mind_data[0]
+    elif isinstance(mind_data, (str, unicode)):
+        return mind_data
+    elif isinstance(mind_data, dict) and len(mind_data) > 0:
+        if 'fqdn' not in mine_data or  'ip' not in mine_data:
+            raise RuntimeError, "fqdn or ip not in mine_data"
+        node = mine_data['fqdn']
+        ip = mine_data['ip']
     else:
-        return node
+        raise RuntimeError, "Unexpected data type"
 
-def records_from_mine(mine_search, mine_func, minion_id_replace, mine_search_expr):
+    return (node, ip)
+
+def records_from_mine(mine_search, mine_func, mine_search_expr):
     """Rerturn list of (node, ip) tuples from Salt mine"""
     ret = __salt__['mine.get'](mine_search, mine_func, mine_search_expr)
     if not ret:
@@ -99,12 +90,11 @@ def records_from_mine(mine_search, mine_func, minion_id_replace, mine_search_exp
 
     data = []
     for node, addr in ret.items():
-        if minion_id_replace:
-            (node,ip) = _node_replace(node, minion_id_replace, addr)
-            data.append((node, ip))
+        (node,ip) = _node_replace(node, addr)
+        data.append((node, ip))
     return data
 
-def dual_records_from_mine(mine_search, mine_dual_func, minion_id_replace, mine_search_expr='pcre', mine_dual_prefix='int-'):
+def dual_records_from_mine(mine_search, mine_dual_func, mine_search_expr='pcre', mine_dual_prefix='int-'):
     """Rerturn list of (node, ip) tuples from Salt mine, prefixed with a string"""
     ret = __salt__['mine.get'](mine_search, mine_dual_func, mine_search_expr)
     if not ret:
@@ -112,14 +102,13 @@ def dual_records_from_mine(mine_search, mine_dual_func, minion_id_replace, mine_
 
     data = []
     for node, addr in ret.items():
-        if minion_id_replace:
-            (node, ip) = _node_replace(node, minion_id_replace, addr)
-            node = mine_dual_prefix + node
-            data.append((node, ip))
+        (node, ip) = _node_replace(node, addr)
+        node = mine_dual_prefix + node
+        data.append((node, ip))
     return data
     return data
 
-def auto_delegate_zone_from_mine(auto_delegate_from_mine, minion_id_replace):
+def auto_delegate_zone_from_mine(auto_delegate_from_mine ):
     """Delegate DNS sub-domains to minions matching pattern"""
     data = []
     for auto in auto_delegate_from_mine:
@@ -130,14 +119,13 @@ def auto_delegate_zone_from_mine(auto_delegate_from_mine, minion_id_replace):
         if not ret:
             return []
         for node, addr in ret.items():
-            if minion_id_replace:
-                node = _node_replace(node, minion_id_replace)
+            (node, ip) = _node_replace(node, addr)
             delegated_domain = '.'.join(node.split('.')[1:])
-            data.append((delegated_domain, node, _get_addr(addr)))
+            data.append((delegated_domain, node, ip))
 
     return data
 
-def auto_delegate_zone_from_grain(auto_delegate_from_grains, minion_id_replace):
+def auto_delegate_zone_from_grain(auto_delegate_from_grains):
     """Delegate DNS sub-domains to minions matching pattern"""
     data = []
     for auto in auto_delegate_from_grains:
@@ -145,9 +133,8 @@ def auto_delegate_zone_from_grain(auto_delegate_from_grains, minion_id_replace):
         if not ret:
             return []
         for node, addr in ret.items():
-            if minion_id_replace:
-                node = _node_replace(node, minion_id_replace)
+            (node, ip) = _node_replace(node, addr)
             delegated_domain = '.'.join(node.split('.')[1:])
-            data.append((delegated_domain, node, _get_addr(addr)))
+            data.append((delegated_domain, node, ip))
 
     return data
