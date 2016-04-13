@@ -16,7 +16,7 @@ dnssec-validation {{ datamap.dnssec_validation|default('auto') }};
 {%- endfor %}
 {%- endif %}
 
-{% if salt['pillar.get']('binddns:forwarders', False) -%}
+{% if salt['pillar.get']('binddns:forwarders', datamap.forwarders) -%}
 forwarders {
   {%- for f in salt['pillar.get']('binddns:forwarders') %}
   {{ f }};
