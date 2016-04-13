@@ -45,14 +45,14 @@ def _cloud_ip(corp=None):
         ctype['type'] = hy_type
         ctype['internal_ip'] = __salt__['grains.get']('ec2_internal_ip', None)
         ctype['external_ip'] = __salt__['grains.get']('ec2_external_ip', None)
-        ctype['fqdn'] = __salt__['grains.get']('id').replace('compute.internal', corp)
+        ctype['fqdn'] = __salt__['grains.get']('id').replace('compute.internal', "aws.%s" % corp)
         return ctype
     elif hy_type == 'gce':
         ctype['type'] = hy_type
         ctype['internal_ip'] = __salt__['grains.get']('gce_internal_ip', None)
         ctype['external_ip'] = __salt__['grains.get']('gce_external_ip', None)
         fqdn = __salt__['grains.get']('id')
-        fqdn = re.sub(r'\.c\.([\w-]+)\.internal', '\1.' + corp, fqdn)
+        fqdn = re.sub(r'\.c\.([\w-]+)\.internal', r'.\1.gce.%s' % corp, fqdn)
         ctype['fqdn'] = fqdn
         return ctype
     elif hy_type == 'os':
@@ -60,7 +60,7 @@ def _cloud_ip(corp=None):
         ctype['internal_ip'] = __salt__['grains.get']('os_internal_ip', None)
         ctype['external_ip'] = __salt__['grains.get']('os_external_ip', None)
         ctype['fqdn'] = __salt__['grains.get']('id').replace('novalocal', corp)
-        ctype['fqdn'] = ctype['fqdn'].replace('openstacklocal', corp)
+        ctype['fqdn'] = ctype['fqdn'].replace('openstacklocal', "os.%s" % corp)
         return ctype
     else:
         raise RuntimeError, "No implemented"
