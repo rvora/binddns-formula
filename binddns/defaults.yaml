@@ -10,7 +10,7 @@ Debian:
     name: bind
   vardir: /var/cache/bind
   zonedir: /var/cache/bind/zones
-  forarders:
+  forwarders:
     - 8.8.8.8
     - 8.8.4.4
   config:
@@ -60,7 +60,7 @@ RedHat:
     name: named
   vardir: /var/named
   zonedir: /var/named/data
-  forarders:
+  forwarders:
     - 8.8.8.8
     - 8.8.4.4
   config:
