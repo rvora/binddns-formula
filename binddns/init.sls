@@ -111,9 +111,9 @@ zoneconfigs:
 
 {% for z in salt['pillar.get']('binddns:zones', []) %}
   {% if z.create_db_only is not defined %}
-    {% set z['create_db_only'] = True %}
+    {% set create_db_only = True %}
   {% endif %}
-  {% if not (z.create_db_only and salt['file.file_exists'](datamap.zonedir ~ '/db.' ~ z.name)) %}
+  {% if not (create_db_only and salt['file.file_exists'](datamap.zonedir ~ '/db.' ~ z.name)) %}
     {% set include_list = [] %}
     {% if (z.zone_recs_from_mine is defined and z.zone_recs_from_mine) or
           (z.auto_delegate_from_mine is defined and z.auto_delegate_from_mine) %}
