@@ -22,17 +22,17 @@ def _get_hybridtype():
     else:
         raise RuntimeError, "No implemented"
 
-def internal_cloud_ip(corp=None):
-    ctype = _cloud_ip(corp=corp)
+def internal_cloud_ip(corp_suffix=None):
+    ctype = _cloud_ip(corp_suffix=corp_suffix)
     return {'ip': ctype['internal_ip'],
             'fqdn': ctype['fqdn']}
 
-def external_cloud_ip(corp=None):
-    ctype = _cloud_ip(corp=corp)
+def external_cloud_ip(corp_suffix=None):
+    ctype = _cloud_ip(corp_suffix=corp_suffix)
     return {'ip': ctype['external_ip'],
             'fqdn': ctype['fqdn']}
 
-def _cloud_ip(corp=None):
+def _cloud_ip(corp_suffix=None):
     """Returns a dictionary
     {internal_ip:
      external_ip:
@@ -45,33 +45,40 @@ def _cloud_ip(corp=None):
         ctype['type'] = hy_type
         ctype['internal_ip'] = __salt__['grains.get']('ec2_internal_ip', None)
         ctype['external_ip'] = __salt__['grains.get']('ec2_external_ip', None)
-        ctype['fqdn'] = __salt__['grains.get']('id').replace('compute.internal', "aws.%s" % corp)
+        fqdn = __salt__['grains.get']('id')
+        if corp_suffix:
+            fqdn = fqdn.replace('compute.internal', "aws.%s" % corp_suffix)
+        ctype['fqdn'] = fqdn
         return ctype
     elif hy_type == 'gce':
         ctype['type'] = hy_type
         ctype['internal_ip'] = __salt__['grains.get']('gce_internal_ip', None)
         ctype['external_ip'] = __salt__['grains.get']('gce_external_ip', None)
         fqdn = __salt__['grains.get']('id')
-        fqdn = re.sub(r'\.c\.([\w-]+)\.internal', r'.\1.gce.%s' % corp, fqdn)
+        if corp_suffix:
+            fqdn = re.sub(r'\.c\.([\w-]+)\.internal', r'.\1.gce.%s' % corp_suffix, fqdn)
         ctype['fqdn'] = fqdn
         return ctype
     elif hy_type == 'os':
         ctype['type'] = hy_type
         ctype['internal_ip'] = __salt__['grains.get']('os_internal_ip', None)
         ctype['external_ip'] = __salt__['grains.get']('os_external_ip', None)
-        ctype['fqdn'] = __salt__['grains.get']('id').replace('novalocal', corp)
-        ctype['fqdn'] = ctype['fqdn'].replace('openstacklocal', "os.%s" % corp)
+        fqdn = __salt__['grains.get']('id')
+        if corp_suffix:
+            fqdn = fqdn.replace('novalocal', "os.%s" % corp_suffix)
+            fqdn = fqdn.replace('openstacklocal', "os.%s" % corp_suffix)
+        ctype['fqdn'] = fqdn
         return ctype
     else:
         raise RuntimeError, "No implemented"
 
 def _node_replace(node, mine_data=None):
-    """Rename minion id using string replace patterns"""
+    """Extract information from mine data and return node, ip tuple"""
 
     if isinstance(mine_data, list) and len(mine_data) > 0:
-        return mine_data[0]
+        return (node, mine_data[0])
     elif isinstance(mine_data, (str, unicode)):
-        return mine_data
+        return (node, mine_data)
     elif isinstance(mine_data, dict) and len(mine_data) > 0:
         if 'fqdn' not in mine_data or  'ip' not in mine_data:
             raise RuntimeError, "fqdn or ip not in mine_data"
