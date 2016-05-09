@@ -1,5 +1,6 @@
 #!jinja|yaml
 
+{% if salt['pillar.get'](binddns, None) %}
 {% from "binddns/defaults.yaml" import rawmap with context %}
 {% set datamap = salt['grains.filter_by'](rawmap, merge=salt['pillar.get']('binddns:lookup')) %}
 
@@ -192,3 +193,5 @@ incl_{{ z.name }}:
         minion_id_replace: {{ z.minion_id_replace|default({}) }}
   {% endif %}
 {% endfor %}
+
+{% endif %}
