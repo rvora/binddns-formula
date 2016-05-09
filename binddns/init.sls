@@ -40,8 +40,8 @@ defaults_file:
     - source: {{ datamap.config.defaults_file.template_path|default('salt://binddns/files/defaults_file.' ~ salt['grains.get']('os_family')) }}
     - template: {{ datamap.config.defaults_file.template_renderer|default('jinja') }}
     - mode: {{ datamap.config.defaults_file.mode|default('644') }}
-    - user: {{ datamap.config.defaults_file.user|default('root') }}
-    - group: {{ datamap.config.defaults_file.group|default('root') }}
+    - user: {{ datamap.config.defaults_file.user|default(datamap.user.name) }}
+    - group: {{ datamap.config.defaults_file.group|default(datamap.group.name) }}
 {% endif %}
 
 {% if 'named_conf' in datamap.config.manage %}
@@ -106,8 +106,8 @@ zoneconfigs:
     - source: {{ datamap.config.zoneconfigs.template_path|default('salt://binddns/files/named.conf.zones') }}
     - template: {{ datamap.config.zoneconfigs.template_renderer|default('jinja') }}
     - mode: {{ datamap.config.zoneconfigs.mode|default('644') }}
-    - user: {{ datamap.config.zoneconfigs.user|default('root') }}
-    - group: {{ datamap.config.zoneconfigs.group|default('root') }}
+    - user: {{ datamap.config.zoneconfigs.user|default(datamap.user.name) }}
+    - group: {{ datamap.config.zoneconfigs.group|default(datamap.group.name) }}
 {% endif %}
 
 {% for z in salt['pillar.get']('binddns:zones', []) %}
@@ -134,8 +134,10 @@ zone_{{ z.name }}:
     - source: {{ datamap.config.zones.template_path|default('salt://binddns/files/zonefile') }}
     - template: {{ datamap.config.zones.template_renderer|default('jinja') }}
     - mode: {{ datamap.config.zones.mode|default('644') }}
-    - user: {{ datamap.config.zones.user|default('root') }}
-    - group: {{ datamap.config.zones.group|default('root') }}
+    - user: {{ datamap.config.zones.user|default(datamap.user.name) }}
+    - group: {{ datamap.config.zones.group|default(datamap.group.name) }}
+    - require:
+      - file: zonedir
     - watch_in:
       - service: binddns
     - context:
@@ -162,8 +164,10 @@ incl_{{ z.name }}:
     - source: {{ datamap.config.zones.template_path|default('salt://binddns/files/zone_recs_from_salt') }}
     - template: {{ datamap.config.zones.template_renderer|default('jinja') }}
     - mode: {{ datamap.config.zones.mode|default('644') }}
-    - user: {{ datamap.config.zones.user|default('root') }}
-    - group: {{ datamap.config.zones.group|default('root') }}
+    - user: {{ datamap.config.zones.user|default(datamap.user.name) }}
+    - group: {{ datamap.config.zones.group|default(datamap.group.name) }}
+    - require:
+      - file: zonedir
     - watch_in:
       - service: binddns
     - context:
