@@ -1,6 +1,6 @@
 #!jinja|yaml
 
-{% if salt['pillar.get'](binddns, None) %}
+{% if salt['pillar.get']('binddns', None) %}
 {% from "binddns/defaults.yaml" import rawmap with context %}
 {% set datamap = salt['grains.filter_by'](rawmap, merge=salt['pillar.get']('binddns:lookup')) %}
 
