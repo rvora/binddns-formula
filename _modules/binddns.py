@@ -98,7 +98,8 @@ def records_from_mine(mine_search, mine_func, mine_search_expr):
     data = []
     for node, addr in ret.items():
         (node,ip) = _node_replace(node, addr)
-        data.append((node, ip))
+        if ip:
+            data.append((node, ip))
     return data
 
 def dual_records_from_mine(mine_search, mine_dual_func, mine_search_expr='pcre', mine_dual_prefix='int-'):
@@ -111,8 +112,8 @@ def dual_records_from_mine(mine_search, mine_dual_func, mine_search_expr='pcre',
     for node, addr in ret.items():
         (node, ip) = _node_replace(node, addr)
         node = mine_dual_prefix + node
-        data.append((node, ip))
-    return data
+        if ip:
+            data.append((node, ip))
     return data
 
 def auto_delegate_zone_from_mine(auto_delegate_from_mine ):
@@ -127,8 +128,9 @@ def auto_delegate_zone_from_mine(auto_delegate_from_mine ):
             return []
         for node, addr in ret.items():
             (node, ip) = _node_replace(node, addr)
-            delegated_domain = '.'.join(node.split('.')[1:])
-            data.append((delegated_domain, node, ip))
+            if ip:
+                delegated_domain = '.'.join(node.split('.')[1:])
+                data.append((delegated_domain, node, ip))
 
     return data
 
@@ -141,7 +143,8 @@ def auto_delegate_zone_from_grain(auto_delegate_from_grains):
             return []
         for node, addr in ret.items():
             (node, ip) = _node_replace(node, addr)
-            delegated_domain = '.'.join(node.split('.')[1:])
-            data.append((delegated_domain, node, ip))
+            if ip:
+                delegated_domain = '.'.join(node.split('.')[1:])
+                data.append((delegated_domain, node, ip))
 
     return data
